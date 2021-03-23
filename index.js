@@ -70,11 +70,14 @@ const start = async () => {
   const saveClassifier = async (classifierModel) => {
     let datasets = await classifierModel.getClassifierDataset();
     let datasetObject = {};
-    Object.keys(datasets).forEach(async (key) => {
+    
+    const promises = Object.keys(datasets).map(async (key) => {
       let data = await datasets[key].dataSync();
       datasetObject[key] = Array.from(data);
     });
-    let jsonModel = JSON.stringify(datasetObject);
+
+    await Promise.all(promises);
+
 
     let downloader = document.createElement('a');
     downloader.download = "model.json";
